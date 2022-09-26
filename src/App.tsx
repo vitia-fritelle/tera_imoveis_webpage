@@ -65,7 +65,7 @@ export const App = () => (
         </Grid>
       </Flex>
       <Spacer />
-      <Flex flexDir="column" padding="0 8.1vw 5% 8.1vw">
+      <Flex flexDir="column" padding="0 7vw 5% 7vw">
         <Text fontWeight="700" fontSize="1.375rem" mb="8px">
           O que é uma estimativa instantânea?
         </Text>
