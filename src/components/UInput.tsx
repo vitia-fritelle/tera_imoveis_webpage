@@ -12,14 +12,14 @@ type Props = InputProps & {
   name: string;
   label: string;
   qtdCaracteres?: number;
-  onChangeHandler?: (e: ChangeEvent<HTMLInputElement>) => void;
+  // onChangeHandler: any;
 };
 
 const UInput: React.FC<Props> = ({
   name,
   label,
   qtdCaracteres,
-  onChangeHandler,
+  // onChangeHandler,
   ...props
 }) => {
   const [field, meta] = useField({ name });
@@ -34,7 +34,8 @@ const UInput: React.FC<Props> = ({
       </FormLabel>
       <Input
         {...props}
-        onInput={onChangeHandler}
+        // onInput={onChangeHandler}
+        // onChangeCapture
         as={Field}
         {...field}
         maxLength={qtdCaracteres !== undefined ? qtdCaracteres : 255}

@@ -59,6 +59,7 @@ export function PgPrincipal() {
   const [AreaCosntruida, setAreaCosntruida] = useState(1);
   const onAreaCosntruidaChangeHandler = (area: number) => {
     setAreaCosntruida(area!);
+    console.log(area)
   };
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -82,14 +83,6 @@ export function PgPrincipal() {
         })}
         onSubmit={async (values, actions) => {
           try {
-            console.log({
-              quartos: Quartos,
-              banheiros: Banheiro,
-              vagas: VagasGaragem,
-              area: AreaCosntruida,
-              categoria: Categoria,
-              bairro: Bairro,
-            })
             const response = await axios({
               method: 'post',
               url: 'https://tera-imoveis-backend.herokuapp.com/api',
@@ -97,7 +90,7 @@ export function PgPrincipal() {
                 quartos: Quartos,
                 banheiros: Banheiro,
                 vagas: VagasGaragem,
-                area: AreaCosntruida,
+                area: values.areaConstruida,
                 categoria: Categoria,
                 bairro: Bairro,
               }

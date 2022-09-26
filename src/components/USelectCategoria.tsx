@@ -50,7 +50,7 @@ const USelectCategoria: React.FC<Props> = ({
     valor as any
   );
 
-  const bairros: string[] = ["Apartementos", "Casas"];
+  const bairros: string[] = ["Apartamentos", "Casas"];
 
   // field;
 
