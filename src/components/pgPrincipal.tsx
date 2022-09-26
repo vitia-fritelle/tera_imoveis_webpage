@@ -21,6 +21,11 @@ import {
   Input,
   Flex,
   Button,
+  ModalOverlay,
+  ModalHeader,
+  ModalCloseButton,
+  Center,
+  Heading,
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import * as Yup from "yup";
@@ -40,7 +45,7 @@ export function PgPrincipal() {
   const onCategoriaChangeHandler = (categoria: string) => {
     setCategoria(categoria!);
   };
-          
+
   const [Quartos, setQuartos] = useState(1);
   const onQuartosChangeHandler = (quartos: number) => {
     setQuartos(quartos!);
@@ -59,13 +64,90 @@ export function PgPrincipal() {
   const [AreaCosntruida, setAreaCosntruida] = useState(1);
   const onAreaCosntruidaChangeHandler = (area: number) => {
     setAreaCosntruida(area!);
-    console.log(area)
+    console.log(area);
   };
+
+  const [ValorRecebido, setValorRecebido] = useState("");
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const Overlay = (
+    <ModalOverlay
+      bg="rgba(0, 0, 0, 0.65)"
+      backdropFilter="blur(2px)"
+      w="100%"
+    />
+  );
+
+  function formatReal(numero: number) {
+    var tmp = numero + "";
+    tmp = tmp.replace(/([0-9]{2})$/g, ",$1");
+    if (tmp.length > 6) tmp = tmp.replace(/([0-9]{3}),([0-9]{2}$)/g, ".$1,$2");
+
+    return tmp;
+  }
+
   return (
     <>
+      <Modal scrollBehavior="inside" isOpen={isOpen} onClose={onClose}>
+        {Overlay}
+        <ModalContent w="40vw" h="auto" maxW="none" alignSelf="center">
+          <ModalCloseButton
+            mr="-50px"
+            mt="-50px"
+            justifyContent="center"
+            _hover={{ textColor: "black", bgColor: "#ffeb89" }}
+            color="black"
+            bgColor="white"
+            borderRadius="full"
+            border="0px"
+            colorScheme="teal"
+            variant="ghost"
+            _focus={{ boxShadow: "none", textColor: "black", bg: "#d7d7d7" }}
+            _active={{
+              bg: "#ededed",
+              transform: "scale(1.02)",
+              textColor: "white",
+              borderColor: "#dbdbdb",
+            }}
+          />
+          <ModalBody>
+            <VStack>
+              <Flex
+                flexDir="column"
+                width="100%"
+                position="relative"
+                zIndex="1"
+                paddingBottom="0.75rem"
+              >
+                <Flex flexDir="row" mt="2">
+                  <Heading></Heading>
+                </Flex>
+                <Flex flexDir="column" paddingX="1.5rem">
+                  <Center>
+                    <Text
+                      paddingTop="1.5rem"
+                      paddingBottom="2rem"
+                      fontSize="2.25rem"
+                      fontWeight="700"
+                      textAlign="center"
+                    >
+                      O valor de seu imóvel foi estimado em:
+                    </Text>
+                  </Center>
+                  <Center alignItems="baseline" w="100%" mr="15px" mb="1.2vh">
+                    <Text className="Titulo" fontSize="2.5rem" fontWeight="500" mr="10px">
+                    {/* R$ 375.000,00 */}
+                    {ValorRecebido}
+                    </Text>
+                  </Center>
+                  <Center mt="6vh" mb="4vh"></Center>
+                </Flex>
+              </Flex>
+            </VStack>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
       <Formik
         initialValues={{
           quartos: Quartos,
@@ -76,7 +158,8 @@ export function PgPrincipal() {
           bairro: Bairro,
         }}
         validationSchema={Yup.object({
-          areaConstruida: Yup.number().positive()
+          areaConstruida: Yup.number()
+            .positive()
             .required("A área construída é obrigatória!"),
           tipoImovel: Yup.string().required("O tipo de imóvel é obrigatório!"),
           bairro: Yup.string().required("O bairro é obrigatório!"),
@@ -84,8 +167,8 @@ export function PgPrincipal() {
         onSubmit={async (values, actions) => {
           try {
             const response = await axios({
-              method: 'post',
-              url: 'https://tera-imoveis-backend.herokuapp.com/api',
+              method: "post",
+              url: "https://tera-imoveis-backend.herokuapp.com/api",
               data: {
                 quartos: Quartos,
                 banheiros: Banheiro,
@@ -93,13 +176,16 @@ export function PgPrincipal() {
                 area: values.areaConstruida,
                 categoria: Categoria,
                 bairro: Bairro,
-              }
-            })
-            console.log(response.data)
-
+              }, 
+            }).then((response) => {
+              setValorRecebido(response.data.data.price.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'}));
+              onOpen();
+              console.log();
+            });
+            
           } catch (error: any) {
-            console.log((error as AxiosError).response?.data)
-            console.log((error as AxiosError).request)
+            console.log((error as AxiosError).response?.data);
+            console.log((error as AxiosError).request);
           }
           // actions.resetForm();
         }}
@@ -120,8 +206,8 @@ export function PgPrincipal() {
               boxShadow="rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px"
               alignItems="center"
               flexDir="column"
-              bgColor="#c6c6c68c"
-              backdropFilter="blur(6px)"
+              bgColor="#c6c6c67e"
+              backdropFilter="blur(4px)"
               border="2px"
               borderColor="#fff"
               borderRadius="20px"
@@ -212,8 +298,8 @@ export function PgPrincipal() {
               fontWeight="700"
               lineHeight="90px"
               textShadow="0px 4px 4px rgba(0, 0, 0, 0.25)"
-              mr="21vw"
-              mt="5vh"
+              // mr="21vw"
+              ml="1vw"
             >
               Quanto <br /> vale <br /> meu <br /> imóvel?
             </Text>
